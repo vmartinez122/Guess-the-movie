@@ -37,11 +37,11 @@ public class Main {
             switch (intFromConsole(1,3)){
                 case 1: //Guess a letter
                     System.out.println(ANSI_YELLOW+"Guess a letter:"+ANSI_RESET);
-
+                    guessLetter();
                     break;
                 case 2: //Guess the movie's title
                     System.out.println(ANSI_YELLOW+"Guess the movie's title:"+ANSI_RESET);
-
+                    //guessTitle();
                     break;
                 case 3: //Salir del programa
                     System.out.println("Exiting...");
@@ -52,6 +52,13 @@ public class Main {
                     break;
             }
         } while(!exit);
+    }
+
+    private void guessLetter(){
+        //Ask player letter --> check
+        //Add letter to Game
+        game.addLetter(charFromConsole());
+        //-1 Player turn
     }
 
     /**
@@ -73,4 +80,16 @@ public class Main {
         System.out.println(ANSI_RED+"Valor inválido. Introduce un número [" + min + " - " + max + "]"+ANSI_RESET);
         return -1; //Si el número es inválido, el método devuelve -1, para que se vuelva a mostrar el menú
     }
+
+    private char charFromConsole(){
+        String c;
+        do {
+            c = input.nextLine();
+            if(!c.isBlank()||c.length()==1){
+                return c.charAt(0); //Devuelve la primera letra
+            }
+            System.out.println(ANSI_RED+"Error. Introduce 1 único carácter."+ANSI_RESET);
+        }while (true);
+    }
+
 }

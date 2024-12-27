@@ -17,4 +17,25 @@ public class Game {
             }
         }
     }
+
+    public boolean addLetter(char answ){
+        int pos;
+        int oldpos = 0;
+        if(guess.toString().contains(""+answ)) {
+            return true;
+        }else{
+                if (film.contains(""+answ)) {
+                    do {
+                        pos = film.indexOf(answ, oldpos);
+                        if (pos != -1) {
+                            guess.delete(pos, pos + 1).insert(pos, answ);
+                            oldpos = pos + 1;
+                        }
+                    } while (pos != -1);
+                    return true;
+                } else {
+                    return false;
+                }
+        }
+    }
 }
