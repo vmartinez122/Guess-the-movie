@@ -13,6 +13,7 @@ public class Main {
     final String ANSI_RESET = "\u001B[0m"; //Devolver color predeterminado
     Scanner input = new Scanner(System.in);
     Game game = new Game();
+    Player player = new Player();
     public static void main(String[] args)
     {
         Main programa = new Main();
@@ -29,8 +30,8 @@ public class Main {
             System.out.println(ANSI_YELLOW+"🎯🎯🎯 Guess the Movie 🎯🎯🎯"+ANSI_RESET+
                     "\nThe movie title has "+"TODO"+" characters (including spaces and punctuation)"+
                     "\nYou are guessing: "+game.getGuess()+
-                    "\nRemaining turns: "+"TODO"+
-                    "\nPoints: "+"TODO"+'\n'+"""
+                    "\nRemaining turns: "+player.getTurns()+
+                    "\nPoints: "+player.getPoints()+'\n'+"""
                     [1] Guess a letter
                     [2] Guess the movie's title
                     [3] Exit""");
@@ -55,10 +56,15 @@ public class Main {
     }
 
     private void guessLetter(){
-        //Ask player letter --> check
-        //Add letter to Game
-        game.addLetter(charFromConsole());
-        //-1 Player turn
+        if(game.addLetter(letterFromConsole())){
+            //+10 points
+            player.addPoints(10);
+        }else{
+            //-10 points
+            player.addPoints(-10);
+        }
+        //-1 turn
+        player.minusTurns();
     }
 
     /**
@@ -81,14 +87,21 @@ public class Main {
         return -1; //Si el número es inválido, el método devuelve -1, para que se vuelva a mostrar el menú
     }
 
-    private char charFromConsole(){
-        String c;
+    /**
+     * Pide un String al usuario y devuelve el primer carácter, siempre que este sea 1 única letra
+     * En caso contrario, vuelve a pedir otro String
+     * El método devuelve un String en vez de char, debido a que el valor que devuelve,
+     * será utilizado por una clase StringBuilder, cuyos métodos, utilizan mayoritiariamente String como parámetros
+     * @return letra [a-z] en formato String
+     */
+    private String letterFromConsole(){
+        String x;
         do {
-            c = input.nextLine();
-            if(!c.isBlank()||c.length()==1){
-                return c.charAt(0); //Devuelve la primera letra
+            x = input.nextLine().toLowerCase(); //Queremos el input siempre en minúsculas
+            if(x.length()==1&&x.matches("[a-z]")){ //Si el String x tiene una longidud de 1 carácter y contiene un carácter entre a-z
+                return x; //Devuelve el primer carácter del string
             }
-            System.out.println(ANSI_RED+"Error. Introduce 1 único carácter."+ANSI_RESET);
+            System.out.println(ANSI_RED+"Error. Introduce 1ª única letra."+ANSI_RESET);
         }while (true);
     }
 
