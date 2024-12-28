@@ -10,7 +10,10 @@ import java.util.Scanner;
 public class Main {
     final String ANSI_RED = "\u001B[31m"; //Color rojo
     final String ANSI_YELLOW = "\u001B[33m"; //Color amarillo
+    final String ANSI_GREEN = "\u001B[32m"; //Color verde
+    final String ANSI_PURPLE = "\u001B[35m"; //Color morado
     final String ANSI_RESET = "\u001B[0m"; //Devolver color predeterminado
+
     Scanner input = new Scanner(System.in);
     Game game = new Game();
     Player player = new Player();
@@ -28,21 +31,21 @@ public class Main {
         boolean exit = false; //Variable que cierra el menú
         do {
             System.out.println(ANSI_YELLOW+"🎯🎯🎯 Guess the Movie 🎯🎯🎯"+ANSI_RESET+
-                    "\nThe movie title has "+"TODO"+" characters (including spaces and punctuation)"+
-                    "\nYou are guessing: "+game.getGuess()+
-                    "\nRemaining turns: "+player.getTurns()+
-                    "\nPoints: "+player.getPoints()+'\n'+"""
+                    "\nThe movie title has "+game.countFilmChars()+" characters (including spaces and punctuation)"+
+                    "\nYou are guessing: "+ANSI_PURPLE+game.getGuess()+ANSI_RESET+
+                    "\nRemaining turns: "+ANSI_PURPLE+player.getTurns()+ANSI_RESET+
+                    "\nPoints: "+ANSI_PURPLE+player.getPoints()+ANSI_RESET+'\n'+"""
                     [1] Guess a letter
                     [2] Guess the movie's title
                     [3] Exit""");
             switch (intFromConsole(1,3)){
                 case 1: //Guess a letter
-                    System.out.println(ANSI_YELLOW+"Guess a letter:"+ANSI_RESET);
+                    //System.out.println(ANSI_YELLOW+"Guess a letter:"+ANSI_RESET);
                     guessLetter();
                     break;
                 case 2: //Guess the movie's title
-                    System.out.println(ANSI_YELLOW+"Guess the movie's title:"+ANSI_RESET);
-                    //guessTitle();
+                    //System.out.println(ANSI_YELLOW+"Guess the movie's title:"+ANSI_RESET);
+                    guessTitle();
                     break;
                 case 3: //Salir del programa
                     System.out.println("Exiting...");
@@ -57,24 +60,23 @@ public class Main {
     }
 
     private void guessLetter(){
-        final int POINTS = 10;
-
+        final int LETTER_POINTS = 10;
         do {
-            System.out.println("Insert your guess:");
+            System.out.println(ANSI_YELLOW+"Guess a letter:"+ANSI_RESET);
+            //System.out.println("Insert your guess:");
             String letter = letterFromConsole();
             Answer a = game.addLetter(letter);
             if(a!=Answer.REPEAT) {
                 if (a==Answer.CORRECT) {
                     //+10 points
                     System.out.println(game.getGuess()+
-                            "\nCorrect. +"+POINTS+" points");
-                    player.addPoints(POINTS);
+                            ANSI_GREEN+"\nCorrect. +"+ LETTER_POINTS +" points"+ANSI_RESET);
+                    player.addPoints(LETTER_POINTS);
                 }else{
                     //-10 points
-                    System.out.println(game.getGuess()+
-                            "\nIncorrect. -"+POINTS+" points"+
-                            "\nIncorrect list: "+game.getErrorList());
-                    player.addPoints(-POINTS);
+                    System.out.println("Incorrect list: "+game.getErrorList()+
+                            ANSI_RED+"\nIncorrect. -"+ LETTER_POINTS +" points"+ANSI_RESET);
+                    player.addPoints(-LETTER_POINTS);
                 }
                 //-1 turn
                 player.minusTurns();
@@ -84,6 +86,21 @@ public class Main {
                 //Repite el bucle
             }
         }while (true);
+    }
+
+    public void guessTitle(){
+        final int TITLE_POINTS = 20;
+        System.out.println(ANSI_YELLOW+"Guess the movie's title:"+ANSI_RESET);
+        //System.out.println("Guess movie's title:");
+        if(game.compareTitle(stringFromConsole())){
+            player.addPoints(TITLE_POINTS);
+            //WIN GAME
+            System.out.println("YOU WIN (WIP)");
+        }else {
+            player.addPoints(-TITLE_POINTS);
+            //LOOSE GAME
+            System.out.println("YOU LOOSE (WIP)");
+        }
     }
 
     /**
@@ -121,6 +138,21 @@ public class Main {
                 return x; //Devuelve el primer carácter del string
             }
             System.out.println(ANSI_RED+"Error. Insert a single letter."+ANSI_RESET);
+        }while (true);
+    }
+
+    /**
+     * Comprueba que el usuario no inserte un string vacío, se repite hasta que el string tenga el formato correcto
+     * @return String validado
+     */
+    private String stringFromConsole(){
+        String x;
+        do {
+            x = input.nextLine();
+            if(!x.isBlank()){
+                return x;
+            }
+            System.out.println(ANSI_RED+"Error. Este campo no puede estar vacío."+ANSI_RESET);
         }while (true);
     }
 

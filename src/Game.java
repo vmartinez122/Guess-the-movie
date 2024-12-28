@@ -13,6 +13,9 @@ public class Game {
         return errorList;
     }
 
+    public int countFilmChars(){
+        return film.length();
+    }
     //Genera la palabra escondida
     //TODO leer archivo con nombres
     /**
@@ -21,10 +24,11 @@ public class Game {
      * - Las letras formando el título se mostrarán como "*"
      * - Si el título contiene otros carácteres, se mostrarán.
      */
-    public void create(){
+    public void create(){ //TODO could be in costructor
         for (int c = 0; c < film.length(); ++c) {
             if (!String.valueOf(film.charAt(c)).matches("(?i)[a-z]")) { //String.valueOf, permite convertie un char a String,
                 // de esta manera, podemos comprobar que el carácter no sea una letra [a-z], regex flags: case insensitive (?i)
+                // No funciona para carácteres con accentos
                 guess.append(film.charAt(c)); //Añade el mismo carácter
 
             } else {
@@ -40,18 +44,19 @@ public class Game {
      */
     public Answer addLetter(String answ){
         int pos = 0; //Posición de la letra
-        if(guess.toString().contains(answ)||errorList.contains(answ)) { //Si el jugador repite una letra
+        if(guess.toString().toLowerCase().contains(answ)||errorList.contains(answ)) { //Si el jugador repite una letra
             return Answer.REPEAT;
         }else{
-                if (film.contains(answ)) { //Si el nombre de la película contiene esta letra
+                if (film.toLowerCase().contains(answ)) { //Si el nombre de la película contiene esta letra
                     do {
-                        pos = film.indexOf(answ, pos); //Almacena la posición de la letra indicada empezando por la posición indicada
+                        pos = film.toLowerCase().indexOf(answ, pos); //Almacena la posición de la letra indicada empezando por la posición indicada
                         //En la primera iteración de este bucle, la posición es 0
                         //En las siguentes iteraciones, la posición será la siguiente a la de la última letra encontrada.
                         //Si no encuentra la letra, devuelve -1
                         if (pos != -1) {
-                            guess.replace(pos,pos+1,answ); //Reemplaza el String entre pos(incluído) y pos+1(excluído)
-                            //por el String answ(letra)
+                            guess.replace(pos,pos+1,String.valueOf(film.charAt(pos)));
+                            //Reemplaza el String entre pos(incluído) y pos+1(excluído)
+                            //por el char en film. No utilizamos answ para mantener las lteras mayúsculas.
                             ++pos; //La función indexOf empezará a buscar por la siguiente letra a esta.
                         }
                     } while (pos != -1); //No hay más letras iguales a la introducida
@@ -61,5 +66,14 @@ public class Game {
                     return Answer.INCORRECT;
                 }
         }
+    }
+
+    /**
+     * Comprueba que un String sea igual al título de la película, ignorando mayúsculas en ambos utilizando la función equalsIgnoreCase()
+     * @param answ String a comparar
+     * @return Valor booleano resultado de esta operación
+     */
+    public boolean compareTitle(String answ){
+        return answ.equalsIgnoreCase(film);
     }
 }
