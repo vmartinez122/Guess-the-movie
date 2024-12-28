@@ -5,23 +5,32 @@ public class Game {
     private StringBuilder guess = new StringBuilder();
     private ArrayList<String> errorList = new ArrayList<>();
 
-    public StringBuilder getGuess() {
-        return guess;
+    //Getter nombre de la película
+    public String getFilm() {
+        return film;
     }
 
-    public ArrayList<String> getErrorList() {
-        return errorList;
+    //Devuelve guess como String (StringBuilder es impráctico)
+    public String getGuess() {
+        return guess.toString();
     }
 
+    //Devuelve ErrorList como String
+    public String getErrorList() {
+        return ""+errorList;
+    }
+
+    //Devuelve la longitud del nombre de la película
     public int countFilmChars(){
         return film.length();
     }
+
     //Genera la palabra escondida
     //TODO leer archivo con nombres
     /**
-     * Selecciona un título de forma aleatoria de la lista en un fichero de texto
+     * Selecciona un título de forma aleatoria de la lista en un fichero de texto.
      * Añade carácteres al StringBuilder guess:
-     * - Las letras formando el título se mostrarán como "*"
+     * - Las letras formando el título se mostrarán como "*".
      * - Si el título contiene otros carácteres, se mostrarán.
      */
     public void create(){ //TODO could be in costructor
@@ -38,9 +47,9 @@ public class Game {
     }
 
     /**
-     *
-     * @param answ
-     * @return
+     * Comprueba si una letra está dentro del nombre de la película, no lo está o ya se ha comprobado anteriormente.
+     * @param answ letra que comprobamos.
+     * @return Enum Answer con 3 posibles valores, CORRECT, INCORRECT o REPEAT.
      */
     public Answer addLetter(String answ){
         int pos = 0; //Posición de la letra

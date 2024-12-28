@@ -17,6 +17,8 @@ public class Main {
     Scanner input = new Scanner(System.in);
     Game game = new Game();
     Player player = new Player();
+    boolean win = false; //Indica si el jugador ha ganado
+
     public static void main(String[] args)
     {
         Main programa = new Main();
@@ -40,12 +42,11 @@ public class Main {
                     [3] Exit""");
             switch (intFromConsole(1,3)){
                 case 1: //Guess a letter
-                    //System.out.println(ANSI_YELLOW+"Guess a letter:"+ANSI_RESET);
                     guessLetter();
                     break;
                 case 2: //Guess the movie's title
-                    //System.out.println(ANSI_YELLOW+"Guess the movie's title:"+ANSI_RESET);
                     guessTitle();
+                    exit = true;
                     break;
                 case 3: //Salir del programa
                     System.out.println("Exiting...");
@@ -56,25 +57,50 @@ public class Main {
                     //Valor erróneo
                     break;
             }
+            //Condiciones de final de partida (el jugador ha ganado o se ha quedado sin turnos):
+            if(win||player.getTurns()==0){
+                exit = true;
+            }
         } while(!exit);
+        gameEnd();
     }
 
+    public void gameEnd(){
+        if(win) {
+            System.out.println(ANSI_GREEN + "YOU WON!" + ANSI_RESET);
+        }else {
+            System.out.println(ANSI_RED + "YOU LOST!" + ANSI_RESET);
+        }
+        System.out.println("Name of the film: "+game.getFilm()+
+                "\nTotal points: "+player.getPoints());
+        //Show leaderboard
+    }
+
+    /**
+     * Permite al usuario insertar una letra a adivinar:
+     * Si la letra existe en el título, se muestra la letra añadida y se le suman 10 puntos.
+     * Si la letra no existe en el título, se muestra la lista de letras incorrectas y se le restan 10 puntos.
+     * Si la letra se ha intentado adivinar previamente, se le vuelve a preguntar otra.
+     */
     private void guessLetter(){
         final int LETTER_POINTS = 10;
         do {
             System.out.println(ANSI_YELLOW+"Guess a letter:"+ANSI_RESET);
             //System.out.println("Insert your guess:");
             String letter = letterFromConsole();
-            Answer a = game.addLetter(letter);
+            Answer a = game.addLetter(letter); //El método addLetter, devuelve un enum con los 3 posibles resultados
             if(a!=Answer.REPEAT) {
                 if (a==Answer.CORRECT) {
                     //+10 points
-                    System.out.println(game.getGuess()+
+                    System.out.println(colorChanges(game.getGuess(), ANSI_GREEN, letter.charAt(0))+
                             ANSI_GREEN+"\nCorrect. +"+ LETTER_POINTS +" points"+ANSI_RESET);
                     player.addPoints(LETTER_POINTS);
+                    if(!game.getGuess().contains("*")){
+                        win = true;
+                    }
                 }else{
                     //-10 points
-                    System.out.println("Incorrect list: "+game.getErrorList()+
+                    System.out.println("Incorrect letters: "+colorChanges(game.getErrorList(), ANSI_RED, letter.charAt(0))+
                             ANSI_RED+"\nIncorrect. -"+ LETTER_POINTS +" points"+ANSI_RESET);
                     player.addPoints(-LETTER_POINTS);
                 }
@@ -88,6 +114,29 @@ public class Main {
         }while (true);
     }
 
+    /**
+     * Cambia los carácteres letter de un string al color designado
+     * Changes every letter on a string to the desired color
+     * @param text String a formatear
+     * @param color Color de la letra
+     * @param letter Letra a colorear
+     * @return texto con letras a color
+     */
+    private String colorChanges(String text,String color, char letter){
+        String coloredText = "";
+        for (int i = 0; i < text.length(); i++) { //Recorre el String text
+            char c = text.charAt(i);
+            if (Character.toLowerCase(c)==letter){ //Si es la letra que queremos
+                coloredText=coloredText.concat(color);//Añade color antes de concatenar el carácter
+            }
+            coloredText=coloredText.concat(c+ANSI_RESET);
+        }
+        return coloredText;
+    }
+
+    /**
+     * Comprueba que el título sea igual al introducido por el usuario, restando o sumando 20 puntos.
+     */
     public void guessTitle(){
         final int TITLE_POINTS = 20;
         System.out.println(ANSI_YELLOW+"Guess the movie's title:"+ANSI_RESET);
@@ -95,11 +144,10 @@ public class Main {
         if(game.compareTitle(stringFromConsole())){
             player.addPoints(TITLE_POINTS);
             //WIN GAME
-            System.out.println("YOU WIN (WIP)");
+            win = true;
         }else {
             player.addPoints(-TITLE_POINTS);
             //LOOSE GAME
-            System.out.println("YOU LOOSE (WIP)");
         }
     }
 
@@ -124,8 +172,8 @@ public class Main {
     }
 
     /**
-     * Pide un String al usuario y devuelve el primer carácter, siempre que este sea 1 única letra
-     * En caso contrario, vuelve a pedir otro String
+     * Pide un String al usuario y devuelve el primer carácter, siempre que este sea 1 única letra.
+     * En caso contrario, vuelve a pedir otro String.
      * El método devuelve un String en vez de char, debido a que el valor que devuelve,
      * será utilizado por una clase StringBuilder, cuyos métodos, utilizan mayoritiariamente String como parámetros
      * @return letra [a-z] en formato String
