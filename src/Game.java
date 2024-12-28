@@ -1,20 +1,34 @@
+import java.util.ArrayList;
+
 public class Game {
-    private String film = "aab a"; //Nombre de la película
+    private String film = "aA-ab a"; //Nombre de la película
     private StringBuilder guess = new StringBuilder();
+    private ArrayList<String> errorList = new ArrayList<>();
 
     public StringBuilder getGuess() {
         return guess;
     }
 
+    public ArrayList<String> getErrorList() {
+        return errorList;
+    }
+
     //Genera la palabra escondida
     //TODO leer archivo con nombres
+    /**
+     * Selecciona un título de forma aleatoria de la lista en un fichero de texto
+     * Añade carácteres al StringBuilder guess:
+     * - Las letras formando el título se mostrarán como "*"
+     * - Si el título contiene otros carácteres, se mostrarán.
+     */
     public void create(){
         for (int c = 0; c < film.length(); ++c) {
-            if (film.charAt(c) == ' ') {
-                guess.append(film.charAt(c));
+            if (!String.valueOf(film.charAt(c)).matches("(?i)[a-z]")) { //String.valueOf, permite convertie un char a String,
+                // de esta manera, podemos comprobar que el carácter no sea una letra [a-z], regex flags: case insensitive (?i)
+                guess.append(film.charAt(c)); //Añade el mismo carácter
 
             } else {
-                guess.append('*');
+                guess.append('*'); //Añade un '*' en lugar de la letra
             }
         }
     }
@@ -24,10 +38,10 @@ public class Game {
      * @param answ
      * @return
      */
-    public boolean addLetter(String answ){
+    public Answer addLetter(String answ){
         int pos = 0; //Posición de la letra
-        if(guess.toString().contains(answ)) { //Si el jugador ya ha adivinado esta letra
-            return true;
+        if(guess.toString().contains(answ)||errorList.contains(answ)) { //Si el jugador repite una letra
+            return Answer.REPEAT;
         }else{
                 if (film.contains(answ)) { //Si el nombre de la película contiene esta letra
                     do {
@@ -41,9 +55,10 @@ public class Game {
                             ++pos; //La función indexOf empezará a buscar por la siguiente letra a esta.
                         }
                     } while (pos != -1); //No hay más letras iguales a la introducida
-                    return true;
+                    return Answer.CORRECT;
                 } else {
-                    return false;
+                    errorList.add(answ); //Añadimos la letra al arrayList de letras incorrectas
+                    return Answer.INCORRECT;
                 }
         }
     }

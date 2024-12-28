@@ -46,6 +46,7 @@ public class Main {
                     break;
                 case 3: //Salir del programa
                     System.out.println("Exiting...");
+                    //Show leaderboard
                     exit = true;
                     break;
                 default:
@@ -56,15 +57,33 @@ public class Main {
     }
 
     private void guessLetter(){
-        if(game.addLetter(letterFromConsole())){
-            //+10 points
-            player.addPoints(10);
-        }else{
-            //-10 points
-            player.addPoints(-10);
-        }
-        //-1 turn
-        player.minusTurns();
+        final int POINTS = 10;
+
+        do {
+            System.out.println("Insert your guess:");
+            String letter = letterFromConsole();
+            Answer a = game.addLetter(letter);
+            if(a!=Answer.REPEAT) {
+                if (a==Answer.CORRECT) {
+                    //+10 points
+                    System.out.println(game.getGuess()+
+                            "\nCorrect. +"+POINTS+" points");
+                    player.addPoints(POINTS);
+                }else{
+                    //-10 points
+                    System.out.println(game.getGuess()+
+                            "\nIncorrect. -"+POINTS+" points"+
+                            "\nIncorrect list: "+game.getErrorList());
+                    player.addPoints(-POINTS);
+                }
+                //-1 turn
+                player.minusTurns();
+                break;
+            }else {
+                System.out.println("Letter "+letter+" already guessed. Try again.");
+                //Repite el bucle
+            }
+        }while (true);
     }
 
     /**
@@ -83,7 +102,7 @@ public class Main {
             }
         }
         input.nextLine(); //Limpiar búfer
-        System.out.println(ANSI_RED+"Valor inválido. Introduce un número [" + min + " - " + max + "]"+ANSI_RESET);
+        System.out.println(ANSI_RED+"Invalid velue. Insert a number between [" + min + " - " + max + "]."+ANSI_RESET);
         return -1; //Si el número es inválido, el método devuelve -1, para que se vuelva a mostrar el menú
     }
 
@@ -101,7 +120,7 @@ public class Main {
             if(x.length()==1&&x.matches("[a-z]")){ //Si el String x tiene una longidud de 1 carácter y contiene un carácter entre a-z
                 return x; //Devuelve el primer carácter del string
             }
-            System.out.println(ANSI_RED+"Error. Introduce 1ª única letra."+ANSI_RESET);
+            System.out.println(ANSI_RED+"Error. Insert a single letter."+ANSI_RESET);
         }while (true);
     }
 
