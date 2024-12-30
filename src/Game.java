@@ -1,3 +1,6 @@
+import java.io.File;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Game {
@@ -25,15 +28,35 @@ public class Game {
         return film.length();
     }
 
-    //Genera la palabra escondida
-    //TODO leer archivo con nombres
     /**
-     * Selecciona un título de forma aleatoria de la lista en un fichero de texto.
-     * Añade carácteres al StringBuilder guess:
-     * - Las letras formando el título se mostrarán como "*".
-     * - Si el título contiene otros carácteres, se mostrarán.
+     *
      */
-    public void create(){ //TODO could be in costructor
+    public Game() {
+        File movies = new File("movies.txt");
+        Random rand = new Random();
+        int lines = countFileLines(movies);
+        int filmNum = 0;
+        try (Scanner writeMovies = new Scanner(movies)){
+            int randFilm = rand.nextInt(1,lines+1); // La primera línea es 1, el valor máximo es excluido.
+            System.out.println(randFilm);
+            while (writeMovies.hasNextLine()){
+                filmNum++;
+                if (filmNum == randFilm){
+                    film = writeMovies.nextLine();
+                    break;
+                }
+                writeMovies.nextLine(); //Limpiar bufer
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        /* Genera la palabra escondida
+         * Selecciona un título de forma aleatoria de la lista en un fichero de texto.
+         * Añade carácteres al StringBuilder guess:
+         * - Las letras formando el título se mostrarán como "*".
+         * - Si el título contiene otros carácteres, se mostrarán.
+         */
         for (int c = 0; c < film.length(); ++c) {
             if (!String.valueOf(film.charAt(c)).matches("(?i)[a-z]")) { //String.valueOf, permite convertie un char a String,
                 // de esta manera, podemos comprobar que el carácter no sea una letra [a-z], regex flags: case insensitive (?i)
@@ -44,6 +67,24 @@ public class Game {
                 guess.append('*'); //Añade un '*' en lugar de la letra
             }
         }
+    }
+
+    /**
+     * Cuenta el número de líneas de un fichero File.
+     * @param file Fichero sobre el que queremos contar.
+     * @return número de líneas del ficehro, formato int.
+     */
+    private int countFileLines(File file){
+        int lines = 0;
+        try (Scanner countLines = new Scanner(file)){
+            while (countLines.hasNextLine()){
+                lines++;
+                countLines.nextLine(); // Avanza a la siguiente línea, evita un bucle infinito
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return lines;
     }
 
     /**

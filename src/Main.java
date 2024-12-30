@@ -25,7 +25,6 @@ public class Main {
         programa.start();
     }
     private void start(){
-        game.create();
         menu();
     }
 
