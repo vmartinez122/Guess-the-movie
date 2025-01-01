@@ -8,6 +8,7 @@ import java.util.Scanner;
 //    El fichero de texto debe contener el título de al menos 10 películas distintas.
 
 public class Main {
+    //Variables globales y inicialización de clases
     final String ANSI_RED = "\u001B[31m"; //Color rojo
     final String ANSI_YELLOW = "\u001B[33m"; //Color amarillo
     final String ANSI_GREEN = "\u001B[32m"; //Color verde
@@ -19,16 +20,14 @@ public class Main {
     Player player = new Player(10);
     boolean win = false; //Indica si el jugador ha ganado
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args){ //Utilizamos el método main para llamar a los método que inicializan el programa
         Main programa = new Main();
-        programa.start();
+        programa.menu();
     }
 
-    private void start(){
-        menu();
-    }
-
+    /**
+     * Itera sobre el menú del programa, desde este, podemos interactuar con las distintas funciones del programa
+     */
     private void menu(){
         boolean exit = false; //Variable que cierra el menú
         do {
@@ -84,7 +83,7 @@ public class Main {
                     System.out.println(colorChanges(game.getGuess(), ANSI_GREEN, letter.charAt(0))+
                             ANSI_GREEN+"\nCorrect. +"+ LETTER_POINTS +" points"+ANSI_RESET);
                     player.addPoints(LETTER_POINTS);
-                    //Comprueba si el jugadoir ha ganado, es decir, no quedan letras a adivinar ("*")
+                    //Comprueba si el jugador ha ganado, es decir, no quedan letras a adivinar ("*")
                     if(!game.getGuess().contains("*")){
                         win = true; //Condición fin de juego
                     }

@@ -22,7 +22,7 @@ public class Player {
              ObjectInputStream input = new ObjectInputStream(scores)){
             leaderboard = (String[][]) input.readObject(); //Asigna el array guardado a la variable almacenada en el programa
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e); //Mostrará un error si no hay fichero de guardado (entre otros)
         }
     }
     //Getters variables de la clase:
