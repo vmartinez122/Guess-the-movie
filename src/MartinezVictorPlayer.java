@@ -6,7 +6,8 @@ import java.io.ObjectOutputStream;
 public class MartinezVictorPlayer {
     private int turns; //Turnos que tiene el jugador para adivinar la palabra
     private int points; //Número de puntos que ha logrado obtener el jugador
-    private String[][] leaderboard = new String[5][2]; //Almacena las 5 mayores puntuaciones
+    private String[][] leaderboard = new String[5][2]; //Array list que almacena las 5 mayores puntuaciones junto
+    // al nickname del jugador correspondiente
 
     /**
      * Constructor de la clase, permite asignar el número de turnos que tendrá el jugador.

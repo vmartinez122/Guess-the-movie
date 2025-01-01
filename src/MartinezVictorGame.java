@@ -4,9 +4,9 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class MartinezVictorGame {
-    private String film = "aA-ab a"; //Nombre de la película
-    private StringBuilder guess = new StringBuilder();
-    private ArrayList<String> errorList = new ArrayList<>();
+    private String film; //Nombre de la película
+    private StringBuilder guess = new StringBuilder(); //Nombre de la película ocultado
+        private ArrayList<String> errorList = new ArrayList<>(); //Lista de letras incorrectas
 
     //Getter nombre de la película
     public String getFilm() {
