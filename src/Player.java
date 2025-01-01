@@ -1,3 +1,8 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class Player {
     private int turns; //Turnos que tiene el jugador para adivinar la palabra
     private int points; //Número de puntos que ha logrado obtener el jugador
@@ -5,18 +10,20 @@ public class Player {
 
     /**
      * Constructor de la clase, permite asignar el número de turnos que tendrá el jugador.
-     * El jugador siempre empiza con 0 puntos.
+     * El jugador siempre empieza con 0 puntos.
+     * Carga la tabla de puntuaciones de un fichero binario.
      * @param turns Número de turnos
      */
     public Player(int turns) {
         this.turns = turns;
         this.points = 0;
-        //TESTING
-        leaderboard[0]= new String[]{"n1","40"};
-        leaderboard[1]= new String[]{"n2","30"};
-        leaderboard[2]= new String[]{"n3","30"};
-        leaderboard[3]= new String[]{"n4","20"};
-        leaderboard[4]= new String[]{"n5","10"};
+        //Carga la tabla de puntuaciones
+        try (FileInputStream scores = new FileInputStream("scores.data");
+             ObjectInputStream input = new ObjectInputStream(scores)){
+            leaderboard = (String[][]) input.readObject(); //Asigna el array guardado a la variable almacenada en el programa
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
     //Getters variables de la clase:
     public int getTurns() {
@@ -64,12 +71,14 @@ public class Player {
      * Si encuentra una entrada en la tabla con menos puntos que esta, la reemplaza y sigue comprobando si hay entradas
      *  menores a esta.
      *  Si no hay ningúna puntuacion menor, no se escribirá en la tabla.
+     *  Almacena los cambios en un fichero binario.
      * @param name Nickname del jugador.
      */
     public void updateLeaderboard(String name){
         String[]  newScore = new String[] {name, String.valueOf(points)}; //Nueva puntuación, inicialmente formada del nombre
         // y la puntuación en formato String
         String[]  OldScore; //Puntuación contra la que se comprobará en la iteración actual
+        //Actualiza la tabla de puntuaciones
         for (int row = 0; row < leaderboard.length; ++row){
             OldScore = leaderboard[row]; //Actualiza la puntuación antigua a la fila actual
             if(OldScore[0]==null){ //Si esta puntuación es null, significa que no habrá más puntuaciones en el array
@@ -84,6 +93,14 @@ public class Player {
                     // puntuaciones de mayor a menor
                 }
             }
+        }
+
+        //Guarda la tabla de puntuaciones en un fichero binario
+        try (FileOutputStream scores = new FileOutputStream ("scores.data");
+             ObjectOutputStream output = new ObjectOutputStream(scores)){
+             output.writeObject(leaderboard); //Guarda el array completo
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 }
