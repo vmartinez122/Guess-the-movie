@@ -16,7 +16,7 @@ public class Main {
 
     Scanner input = new Scanner(System.in);
     Game game = new Game();
-    Player player = new Player();
+    Player player = new Player(10);
     boolean win = false; //Indica si el jugador ha ganado
 
     public static void main(String[] args)
@@ -24,6 +24,7 @@ public class Main {
         Main programa = new Main();
         programa.start();
     }
+
     private void start(){
         menu();
     }
@@ -57,22 +58,11 @@ public class Main {
                     break;
             }
             //Condiciones de final de partida (el jugador ha ganado o se ha quedado sin turnos):
-            if(win||player.getTurns()==0){
+            if(win||player.getTurns()<=0){
                 exit = true;
             }
         } while(!exit);
         gameEnd();
-    }
-
-    public void gameEnd(){
-        if(win) {
-            System.out.println(ANSI_GREEN + "YOU WON!" + ANSI_RESET);
-        }else {
-            System.out.println(ANSI_RED + "YOU LOST!" + ANSI_RESET);
-        }
-        System.out.println("Name of the film: "+game.getFilm()+
-                "\nTotal points: "+player.getPoints());
-        //Show leaderboard
     }
 
     /**
@@ -94,8 +84,9 @@ public class Main {
                     System.out.println(colorChanges(game.getGuess(), ANSI_GREEN, letter.charAt(0))+
                             ANSI_GREEN+"\nCorrect. +"+ LETTER_POINTS +" points"+ANSI_RESET);
                     player.addPoints(LETTER_POINTS);
+                    //Comprueba si el jugadoir ha ganado, es decir, no quedan letras a adivinar ("*")
                     if(!game.getGuess().contains("*")){
-                        win = true;
+                        win = true; //Condición fin de juego
                     }
                 }else{
                     //-10 points
@@ -151,6 +142,50 @@ public class Main {
     }
 
     /**
+     * Muestra un mensaje indicando si el jugador ha ganado o perdido, junto con el nombre de la película y número total de puntos.
+     * Después, pide un nombre para intentar introducir la puntuación a la leaderboard (tabla de puntuaciones) y la muestra por pantalla.
+     */
+    public void gameEnd(){
+        if(win) {
+            System.out.println(ANSI_GREEN + "YOU WON!" + ANSI_RESET);
+        }else {
+            System.out.println(ANSI_RED + "YOU LOST!" + ANSI_RESET);
+        }
+        System.out.println("Name of the film: "+ANSI_PURPLE+game.getFilm()+ANSI_RESET+
+                "\nTotal points: "+ANSI_PURPLE+player.getPoints()+ANSI_RESET);
+
+        //Añadir puntuación a leaderboard
+        do {
+            System.out.println("Nickname: ");
+            String name = stringFromConsole();
+            if (!player.validName(name)) {
+                System.out.println(ANSI_RED+"Name unavailable. Try again"+ANSI_RESET);
+            }else {
+                player.updateLeaderboard(name);
+                break;
+            }
+        }while(true);
+
+        //Mostrar leaderboard
+        System.out.println(ANSI_YELLOW+"Leaderboard:"+ANSI_RESET);
+        printLeaderboard();
+    }
+
+    /**
+     * Recoje el array con las puntuaciones, y itera sobre este para mostrar las puntuaciones no null.
+     */
+    private void printLeaderboard() {
+        int pos =1; //Posición de la puntuación en la lista
+        for (String[] row : player.getLeaderboard()){
+            if (row[1]==null){ //Las puntuacines null, no se muestran
+               break;
+            }
+            System.out.println(pos +"# "+row[0]+": "+ANSI_PURPLE+row[1]+ANSI_RESET);
+            ++pos;
+        }
+    }
+
+    /**
      * Verifica el input del usuario, para verificar que és una integer entre un rango de valores
      * @param min Valor mínimo de la integer
      * @param max Valor máximo de la integer
@@ -166,7 +201,7 @@ public class Main {
             }
         }
         input.nextLine(); //Limpiar búfer
-        System.out.println(ANSI_RED+"Invalid velue. Insert a number between [" + min + " - " + max + "]."+ANSI_RESET);
+        System.out.println(ANSI_RED+"Invalid value. Insert a number between [" + min + " - " + max + "]."+ANSI_RESET);
         return -1; //Si el número es inválido, el método devuelve -1, para que se vuelva a mostrar el menú
     }
 
@@ -199,7 +234,7 @@ public class Main {
             if(!x.isBlank()){
                 return x;
             }
-            System.out.println(ANSI_RED+"Error. Este campo no puede estar vacío."+ANSI_RESET);
+            System.out.println(ANSI_RED+"Error. Field cannot be empty."+ANSI_RESET);
         }while (true);
     }
 

@@ -29,16 +29,21 @@ public class Game {
     }
 
     /**
-     *
+     * Constructor de la clase Game, no tiene parámetros de entrada, pero se encarga de escoger una palabra aleatoria
+     * del fichero movies.txt para la instancia de la clase.
+     * A partir de esta palabra, genera un StringBuilder guess, ocultando la palabra:
+     *      - Las letras formando el título se mostrarán como "*".
+     *      - Si el título contiene otros carácteres, se mostrarán.
      */
     public Game() {
         File movies = new File("movies.txt");
         Random rand = new Random();
-        int lines = countFileLines(movies);
-        int filmNum = 0;
+        int lines = countFileLines(movies); //Llama a ún método para saber cuantas líneas hay en el fichero
+        int filmNum = 0; //Variable para iterar sobre las palabras del fichero
+
+        //Escoje una película aleatoria
         try (Scanner writeMovies = new Scanner(movies)){
             int randFilm = rand.nextInt(1,lines+1); // La primera línea es 1, el valor máximo es excluido.
-            System.out.println(randFilm);
             while (writeMovies.hasNextLine()){
                 filmNum++;
                 if (filmNum == randFilm){
@@ -48,15 +53,10 @@ public class Game {
                 writeMovies.nextLine(); //Limpiar bufer
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e); //Excepciones en la lectura de ficheros
         }
 
-        /* Genera la palabra escondida
-         * Selecciona un título de forma aleatoria de la lista en un fichero de texto.
-         * Añade carácteres al StringBuilder guess:
-         * - Las letras formando el título se mostrarán como "*".
-         * - Si el título contiene otros carácteres, se mostrarán.
-         */
+        // Genera la palabra escondida
         for (int c = 0; c < film.length(); ++c) {
             if (!String.valueOf(film.charAt(c)).matches("(?i)[a-z]")) { //String.valueOf, permite convertie un char a String,
                 // de esta manera, podemos comprobar que el carácter no sea una letra [a-z], regex flags: case insensitive (?i)
@@ -78,7 +78,7 @@ public class Game {
         int lines = 0;
         try (Scanner countLines = new Scanner(file)){
             while (countLines.hasNextLine()){
-                lines++;
+                lines++; //Lines incrementa en cada línea del fichero
                 countLines.nextLine(); // Avanza a la siguiente línea, evita un bucle infinito
             }
         } catch (Exception e) {
