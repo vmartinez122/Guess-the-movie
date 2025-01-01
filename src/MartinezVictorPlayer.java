@@ -3,7 +3,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class Player {
+public class MartinezVictorPlayer {
     private int turns; //Turnos que tiene el jugador para adivinar la palabra
     private int points; //Número de puntos que ha logrado obtener el jugador
     private String[][] leaderboard = new String[5][2]; //Almacena las 5 mayores puntuaciones
@@ -14,11 +14,11 @@ public class Player {
      * Carga la tabla de puntuaciones de un fichero binario.
      * @param turns Número de turnos
      */
-    public Player(int turns) {
+    public MartinezVictorPlayer(int turns) {
         this.turns = turns;
         this.points = 0;
         //Carga la tabla de puntuaciones
-        try (FileInputStream scores = new FileInputStream("scores.data");
+        try (FileInputStream scores = new FileInputStream("MartinezVictor_scores.data");
              ObjectInputStream input = new ObjectInputStream(scores)){
             leaderboard = (String[][]) input.readObject(); //Asigna el array guardado a la variable almacenada en el programa
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class Player {
         }
 
         //Guarda la tabla de puntuaciones en un fichero binario
-        try (FileOutputStream scores = new FileOutputStream ("scores.data");
+        try (FileOutputStream scores = new FileOutputStream ("MartinezVictor_scores.data");
              ObjectOutputStream output = new ObjectOutputStream(scores)){
              output.writeObject(leaderboard); //Guarda el array completo
         } catch (Exception e) {

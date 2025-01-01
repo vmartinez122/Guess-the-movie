@@ -3,7 +3,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class Game {
+public class MartinezVictorGame {
     private String film = "aA-ab a"; //Nombre de la película
     private StringBuilder guess = new StringBuilder();
     private ArrayList<String> errorList = new ArrayList<>();
@@ -30,13 +30,13 @@ public class Game {
 
     /**
      * Constructor de la clase Game, no tiene parámetros de entrada, pero se encarga de escoger una palabra aleatoria
-     * del fichero movies.txt para la instancia de la clase.
+     * del fichero MartinezVictor_movies.txt para la instancia de la clase.
      * A partir de esta palabra, genera un StringBuilder guess, ocultando la palabra:
      *      - Las letras formando el título se mostrarán como "*".
      *      - Si el título contiene otros carácteres, se mostrarán.
      */
-    public Game() {
-        File movies = new File("movies.txt");
+    public MartinezVictorGame() {
+        File movies = new File("MartinezVictor_movies.txt");
         Random rand = new Random();
         int lines = countFileLines(movies); //Llama a ún método para saber cuantas líneas hay en el fichero
         int filmNum = 0; //Variable para iterar sobre las palabras del fichero
@@ -92,10 +92,10 @@ public class Game {
      * @param answ letra que comprobamos.
      * @return Enum Answer con 3 posibles valores, CORRECT, INCORRECT o REPEAT.
      */
-    public Answer addLetter(String answ){
+    public MartinezVictorAnswer addLetter(String answ){
         int pos = 0; //Posición de la letra
         if(guess.toString().toLowerCase().contains(answ)||errorList.contains(answ)) { //Si el jugador repite una letra
-            return Answer.REPEAT;
+            return MartinezVictorAnswer.REPEAT;
         }else{
                 if (film.toLowerCase().contains(answ)) { //Si el nombre de la película contiene esta letra
                     do {
@@ -110,10 +110,10 @@ public class Game {
                             ++pos; //La función indexOf empezará a buscar por la siguiente letra a esta.
                         }
                     } while (pos != -1); //No hay más letras iguales a la introducida
-                    return Answer.CORRECT;
+                    return MartinezVictorAnswer.CORRECT;
                 } else {
                     errorList.add(answ); //Añadimos la letra al arrayList de letras incorrectas
-                    return Answer.INCORRECT;
+                    return MartinezVictorAnswer.INCORRECT;
                 }
         }
     }

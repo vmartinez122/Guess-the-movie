@@ -7,7 +7,7 @@ import java.util.Scanner;
 //    blanco, guiones, etc) se mostrarán, solamente usaremos * para las letras.
 //    El fichero de texto debe contener el título de al menos 10 películas distintas.
 
-public class Main {
+public class MartinezVictorMain {
     //Variables globales y inicialización de clases
     final String ANSI_RED = "\u001B[31m"; //Color rojo
     final String ANSI_YELLOW = "\u001B[33m"; //Color amarillo
@@ -16,12 +16,12 @@ public class Main {
     final String ANSI_RESET = "\u001B[0m"; //Devolver color predeterminado
 
     Scanner input = new Scanner(System.in);
-    Game game = new Game();
-    Player player = new Player(10);
+    MartinezVictorGame game = new MartinezVictorGame();
+    MartinezVictorPlayer player = new MartinezVictorPlayer(10);
     boolean win = false; //Indica si el jugador ha ganado
 
     public static void main(String[] args){ //Utilizamos el método main para llamar a los método que inicializan el programa
-        Main programa = new Main();
+        MartinezVictorMain programa = new MartinezVictorMain();
         programa.menu();
     }
 
@@ -76,9 +76,9 @@ public class Main {
             System.out.println(ANSI_YELLOW+"Guess a letter:"+ANSI_RESET);
             //System.out.println("Insert your guess:");
             String letter = letterFromConsole();
-            Answer a = game.addLetter(letter); //El método addLetter, devuelve un enum con los 3 posibles resultados
-            if(a!=Answer.REPEAT) {
-                if (a==Answer.CORRECT) {
+            MartinezVictorAnswer a = game.addLetter(letter); //El método addLetter, devuelve un enum con los 3 posibles resultados
+            if(a!= MartinezVictorAnswer.REPEAT) {
+                if (a== MartinezVictorAnswer.CORRECT) {
                     //+10 points
                     System.out.println(colorChanges(game.getGuess(), ANSI_GREEN, letter.charAt(0))+
                             ANSI_GREEN+"\nCorrect. +"+ LETTER_POINTS +" points"+ANSI_RESET);
